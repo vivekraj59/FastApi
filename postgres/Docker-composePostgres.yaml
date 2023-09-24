@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres
+    hostname: "postgres"
+    container_name: postgres
+    environment:
+      - POSTGRES_PASSWORD=admin
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - 5432:5432
+    networks:
+      - postgres
+    restart: unless-stopped
+    volumes:
+      - postgresdb:/var/lib/postgresql/data/pgdata
+
+  pgadmin:
+    image: dpage/pgadmin4
+    hostname: "pgadmin"
+    container_name: pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=user@domain.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - 8889:80
+    networks:
+      - postgres
+    restart: unless-stopped
+
+volumes:
+  postgresdb:
+    name: postgresdb
+    external: false
+
+networks:
+  postgres:
+    name: postgres
+    driver: bridge
